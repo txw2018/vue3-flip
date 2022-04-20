@@ -3,8 +3,12 @@ import { images } from '~/composables/mock'
 import { shuffle as shuffleFn } from '~/composables/utils'
 import { useImageStore } from '~/store/image'
 const router = useRouter()
-const route = useRoute()
 const imageStore = useImageStore()
+
+let count = 1
+
+const imgSrc = $computed(() => imageStore.getImg.path)
+const imgRect = $computed(() => imageStore.getImg.imgRect)
 
 let imgs = $ref(images)
 const imgRefs = $ref<HTMLImageElement[]>([])
@@ -70,19 +74,18 @@ function go(i: number, img: string) {
 }
 
 function transitionFrom() {
-  const imgMap = imageStore.getImg
-  const prevRect = imgMap.imgRect
+  const prevRect = imgRect
 
   for (let i = 0; i < imgRefs.length; i++) {
     const currentImg = imgRefs[i]
 
-    if (currentImg.src === imgMap.path) {
+    if (currentImg.src === imgSrc) {
       const currentRect = currentImg?.getBoundingClientRect()
       const invert = {
         left: prevRect!.left - currentRect!.left,
         top: prevRect!.top - currentRect!.top,
       }
-      currentImg.style.zIndex = '999'
+      currentImg.style.zIndex = String(count++)
       const keyframes = [
         {
           transform: `translate(${invert.left}px, ${invert.top}px)`,
@@ -100,34 +103,27 @@ function transitionFrom() {
         easing: 'cubic-bezier(0,0,0.32,1)',
       }
       currentImg!.animate(keyframes, options)
+      imageStore.clearImg()
       return false
     }
   }
 }
 
-onMounted(() => {
-  watch(() => route.path, async(to, from) => {
+onActivated(() => {
+  if (imgSrc)
     transitionFrom()
-  }, {
-    immediate: true,
-  })
 })
-
 </script>
 
 <template>
   <button class="m-3 text-sm btn" @click="shuffle">
     shuffle
   </button>
-  <button class="m-3 text-sm btn" @click="transitionFrom">
-    transitionFrom
-  </button>
-  <div flex flex-wrap pt10 position-relative>
+  <div flex flex-wrap pt10>
     <div v-for="(img,i) in imgs" :key="img" w-30 h-50 m10>
       <img
         :ref="el => { if (el) imgRefs[i] = el }"
         inline-block
-        position-absolute
         w-30 h-50
         object-cover
         :src="img"

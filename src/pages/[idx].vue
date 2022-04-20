@@ -1,15 +1,20 @@
 <script setup lang="ts"   >
 import { useImageStore } from '~/store/image'
 const router = useRouter()
+const route = useRoute()
 const imageStore = useImageStore()
 const imgRef = $ref<HTMLImageElement| null>(null)
-const imgMap = imageStore.getImg
-onMounted(() => {
+const imgSrc = $computed(() => imageStore.getImg.path)
+const imgRect = $computed(() => imageStore.getImg.imgRect)
+
+onActivated(() => {
   transitionTo()
+})
+watch(() => route.path, () => {
 })
 // 执行动画
 async function transitionTo() {
-  const prevSrcRectMap = imgMap!.imgRect
+  const prevSrcRectMap = imgRect
 
   const currentSrcRectMap = imgRef!.getBoundingClientRect()
 
@@ -39,7 +44,7 @@ async function transitionTo() {
 
 async function back() {
   imageStore.addImg({
-    path: imgMap!.path,
+    path: imgSrc,
     imgRect: imgRef?.getBoundingClientRect(),
   })
   await nextTick()
@@ -53,7 +58,7 @@ async function back() {
       Back
     </button>
     <div mt10 h150>
-      <img ref="imgRef" w="100" h="150" inline-block :src="imgMap!.path" alt="">
+      <img ref="imgRef" w="100" h="150" inline-block :src="imgSrc" alt="">
     </div>
   </div>
 </template>
