@@ -1,6 +1,7 @@
 export const getRandomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
+
 export const shuffle = (arr: any[]) => {
   const ret = arr.slice()
   for (let i = 0; i < ret.length; i++) {
@@ -11,6 +12,7 @@ export const shuffle = (arr: any[]) => {
   }
   return ret
 }
+
 export const preload = (imgs: any[]): Promise<void> => {
   return new Promise((resolve) => {
     if (!imgs.length)
