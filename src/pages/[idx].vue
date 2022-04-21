@@ -1,7 +1,6 @@
 <script setup lang="ts"   >
 import { useImageStore } from '~/store/image'
 const router = useRouter()
-const route = useRoute()
 const imageStore = useImageStore()
 const imgRef = $ref<HTMLImageElement| null>(null)
 const imgSrc = $computed(() => imageStore.getImg.path)
@@ -10,8 +9,7 @@ const imgRect = $computed(() => imageStore.getImg.imgRect)
 onActivated(() => {
   transitionTo()
 })
-watch(() => route.path, () => {
-})
+
 // 执行动画
 async function transitionTo() {
   const prevSrcRectMap = imgRect

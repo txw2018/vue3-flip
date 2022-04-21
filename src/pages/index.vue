@@ -45,12 +45,6 @@ async function transitionTo(update: Function) {
       easing: 'cubic-bezier(0,0,0.32,1)',
     }
     currentRect.img.animate(keyframes, options)
-
-    // currentRect.img.style = `transform: translate(${invert.left}px, ${invert.top}px);`
-    // requestAnimationFrame(() => {
-    //   currentRect.img.style = 'transition: all 1s'
-    //   currentRect.img.style.transform = ''
-    // })
   })
 }
 
@@ -123,7 +117,7 @@ onActivated(() => {
     <div v-for="(img,i) in imgs" :key="img" w-30 h-50 m10>
       <img
         :ref="el => { if (el) imgRefs[i] = el }"
-        inline-block
+        position-absolute
         w-30 h-50
         object-cover
         :src="img"
