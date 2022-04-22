@@ -45,7 +45,6 @@ async function back() {
     path: imgSrc,
     imgRect: imgRef?.getBoundingClientRect(),
   })
-  await nextTick()
   router.back()
 }
 
